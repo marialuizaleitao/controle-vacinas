@@ -15,25 +15,59 @@ public class PessoaRepository implements BaseRepository<Pessoa> {
 
 	@Override
 	public Pessoa salvar(Pessoa novaPessoa) {
-		String query = "INSERT INTO pessoa (nome, data_nascimento, sexo, cpf, tipo_pessoa) VALUES (?, ?, ?, ?, ?)";
-		Connection conn = Banco.getConnection();
-		PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conn, query);
-		try {
-			preencherParametrosParaInsertOuUpdate(pstmt, novaPessoa);
-			pstmt.execute();
-			ResultSet resultado = pstmt.getGeneratedKeys();
-			if (resultado.next()) {
-				novaPessoa.setId(resultado.getInt(1));
-			}
-		} catch (SQLException erro) {
-			System.out.println("Erro ao salvar nova pessoa.");
-			System.out.println("Erro: " + erro.getMessage());
-		} finally {
-			Banco.closeStatement(pstmt);
-			Banco.closeConnection(conn);
-		}
-		return novaPessoa;
+	    if (novaPessoa.getCpf() == null) {
+	        System.out.println("Erro: CPF não pode ser nulo.");
+	        return null;
+	    } else if (cpfExiste(novaPessoa.getCpf())) {
+	        System.out.println("Erro: CPF duplicado.");
+	        return null;
+	    }
+
+	    String query = "INSERT INTO pessoa (nome, data_nascimento, sexo, cpf, tipo_pessoa) VALUES (?, ?, ?, ?, ?)";
+	    Connection conn = Banco.getConnection();
+	    PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conn, query);
+	    try {
+	        preencherParametrosParaInsertOuUpdate(pstmt, novaPessoa);
+	        pstmt.execute();
+	        ResultSet resultado = pstmt.getGeneratedKeys();
+	        if (resultado.next()) {
+	            novaPessoa.setId(resultado.getInt(1));
+	        }
+	    } catch (SQLException erro) {
+	        System.out.println("Erro ao salvar nova pessoa.");
+	        System.out.println("Erro: " + erro.getMessage());
+	        return null;
+	    } finally {
+	        Banco.closeStatement(pstmt);
+	        Banco.closeConnection(conn);
+	    }
+	    return novaPessoa;
 	}
+
+	private boolean cpfExiste(String cpf) {
+	    Connection conn = Banco.getConnection();
+	    PreparedStatement pstmt = null;
+	    ResultSet resultado = null;
+
+	    try {
+	        String query = "SELECT COUNT(*) AS total FROM pessoa WHERE cpf = ?";
+	        pstmt = conn.prepareStatement(query);
+	        pstmt.setString(1, cpf);
+	        resultado = pstmt.executeQuery();
+	        if (resultado.next()) {
+	            int total = resultado.getInt("total");
+	            return total > 0;
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Erro ao verificar a duplicidade do CPF: " + e.getMessage());
+	    } finally {
+	        Banco.closeResultSet(resultado);
+	        Banco.closePreparedStatement(pstmt);
+	        Banco.closeConnection(conn);
+	    }
+	    return false;
+	}
+
 
 	private void preencherParametrosParaInsertOuUpdate(PreparedStatement pstmt, Pessoa novaPessoa) throws SQLException {
 		pstmt.setString(1, novaPessoa.getNome());
@@ -64,30 +98,65 @@ public class PessoaRepository implements BaseRepository<Pessoa> {
 	}
 
 	@Override
-	public boolean alterar(Pessoa novaPessoa) {
-		boolean alterou = false;
-		String query = " UPDATE pessoa " + " SET nome=?, data_nascimento=?, " + " sexo=?, cpf=? " + " WHERE id=?";
-		Connection conn = Banco.getConnection();
-		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
-		try {
-			pstmt.setString(1, novaPessoa.getNome());
-			pstmt.setDate(2, Date.valueOf(novaPessoa.getDataNascimento()));
-			pstmt.setString(3, novaPessoa.getSexo());
-			pstmt.setString(4, novaPessoa.getCpf());
-			pstmt.setString(5, novaPessoa.getTipoPessoa().toString());
+	public boolean alterar(Pessoa pessoa) {
+	    if (pessoa.getCpf() == null) {
+	        System.out.println("Erro: CPF não pode ser nulo.");
+	        return false;
+	    } else if (cpfExisteParaOutraPessoa(pessoa.getId(), pessoa.getCpf())) {
+	        System.out.println("Erro: CPF duplicado.");
+	        return false;
+	    }
 
-			pstmt.setInt(6, novaPessoa.getId());
+	    boolean alterou = false;
+	    String query = " UPDATE pessoa " +
+	                   " SET nome=?, data_nascimento=?, " +
+	                   " sexo=?, cpf=? " +
+	                   " WHERE id=?";
+	    Connection conn = Banco.getConnection();
+	    PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
+	    try {
+	        pstmt.setString(1, pessoa.getNome());
+	        pstmt.setDate(2, Date.valueOf(pessoa.getDataNascimento()));
+	        pstmt.setString(3, pessoa.getSexo());
+	        pstmt.setString(4, pessoa.getCpf());
+	        pstmt.setInt(5, pessoa.getId());
 
-			alterou = pstmt.executeUpdate() > 0;
-		} catch (SQLException erro) {
-			System.out.println("Erro ao atualizar pessoa.");
-			System.out.println("Erro: " + erro.getMessage());
-		} finally {
-			Banco.closeStatement(pstmt);
-			Banco.closeConnection(conn);
-		}
-		return alterou;
+	        alterou = pstmt.executeUpdate() > 0;
+	    } catch (SQLException erro) {
+	        System.out.println("Erro ao atualizar pessoa.");
+	        System.out.println("Erro: " + erro.getMessage());
+	    } finally {
+	        Banco.closeStatement(pstmt);
+	        Banco.closeConnection(conn);
+	    }
+	    return alterou;
 	}
+
+	private boolean cpfExisteParaOutraPessoa(int pessoaId, String cpf) {
+	    Connection conn = Banco.getConnection();
+	    PreparedStatement pstmt = null;
+	    ResultSet resultado = null;
+
+	    try {
+	        String query = "SELECT COUNT(*) AS total FROM pessoa WHERE cpf = ? AND id != ?";
+	        pstmt = conn.prepareStatement(query);
+	        pstmt.setString(1, cpf);
+	        pstmt.setInt(2, pessoaId);
+	        resultado = pstmt.executeQuery();
+	        if (resultado.next()) {
+	            int total = resultado.getInt("total");
+	            return total > 0;
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Erro ao verificar duplicidade do CPF: " + e.getMessage());
+	    } finally {
+	        Banco.closeResultSet(resultado);
+	        Banco.closePreparedStatement(pstmt);
+	        Banco.closeConnection(conn);
+	    }
+	    return false;
+	}
+
 
 	@Override
 	public Pessoa consultarPorId(int id) {
