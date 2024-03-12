@@ -1,0 +1,13 @@
+DROP DATABASE IF EXISTS vacinas;
+CREATE DATABASE vacinas;
+USE vacinas;
+
+CREATE TABLE vacinas.PESSOA (
+	id INTEGER AUTO_INCREMENT NOT NULL,
+	nome varchar(255) NOT NULL,
+	data_nascimento DATE NOT NULL,
+    sexo CHAR(1) NOT NULL,
+    cpf VARCHAR(11) UNIQUE NOT NULL,
+    tipo_pessoa ENUM('PESQUISADOR', 'VOLUNTARIO', 'PUBLICO_GERAL') NOT NULL,
+	CONSTRAINT pessoa_pk PRIMARY KEY (id)
+);
