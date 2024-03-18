@@ -1,6 +1,7 @@
 package model.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import model.entity.enums.TipoPessoa;
 
@@ -12,11 +13,13 @@ public class Pessoa {
 	private String sexo;
 	private String cpf;
 	private TipoPessoa tipoPessoa;
+	private List<Aplicacao> vacinacoes;
 
 	public Pessoa() {
 	}
 
-	public Pessoa(int id, String nome, LocalDate dataNascimento, String sexo, String cpf, TipoPessoa tipoPessoa) {
+	public Pessoa(int id, String nome, LocalDate dataNascimento, String sexo, String cpf, TipoPessoa tipoPessoa,
+			List<Aplicacao> vacinacoes) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -24,6 +27,7 @@ public class Pessoa {
 		this.sexo = sexo;
 		this.cpf = cpf;
 		this.tipoPessoa = tipoPessoa;
+		this.vacinacoes = vacinacoes;
 	}
 
 	public int getId() {
@@ -72,6 +76,14 @@ public class Pessoa {
 
 	public void setTipoPessoa(TipoPessoa tipoPessoa) {
 		this.tipoPessoa = tipoPessoa;
+	}
+
+	public List<Aplicacao> getVacinacoes() {
+		return vacinacoes;
+	}
+
+	public void setVacinacoes(List<Aplicacao> vacinacoes) {
+		this.vacinacoes = vacinacoes;
 	}
 
 }
