@@ -18,6 +18,7 @@ CREATE TABLE vacinas.VACINA (
     pais_origem VARCHAR(45) NOT NULL,
     id_pesquisador INTEGER NOT NULL,
     estagio ENUM('INICIAL', 'TESTES', 'APLICACAO_EM_MASSA') NOT NULL,
+    data_inicio_pesquisa DATE NOT NULL,
     CONSTRAINT vacina_pk PRIMARY KEY (id),
     CONSTRAINT pesquisador_pk FOREIGN KEY (id_pesquisador)
         REFERENCES PESSOA (id)

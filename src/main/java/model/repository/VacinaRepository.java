@@ -1,6 +1,7 @@
 package model.repository;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			return null;
 		}
 
-		String query = "INSERT INTO vacina (nome, pais_origem, id_pesquisador, estagio) VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO vacina (nome, pais_origem, id_pesquisador, estagio, data_inicio_pesquisa) VALUES (?, ?, ?, ?, ?)";
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conn, query);
 		try {
@@ -48,6 +49,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		pstmt.setString(2, novaVacina.getPaisOrigem());
 		pstmt.setInt(3, novaVacina.getPesquisadorResponsavel().getId());
 		pstmt.setString(4, novaVacina.getEstagio().toString());
+		pstmt.setDate(5, Date.valueOf(novaVacina.getDataInicioPesquisa()));
 	}
 
 	@Override
@@ -79,8 +81,8 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		}
 
 		boolean alterou = false;
-		String query = " UPDATE vacina " + " SET nome=?, pais_origem=?, " + " id_pesquisador=?, estagio=? "
-				+ " WHERE id=?";
+		String query = " UPDATE vacina " + " SET nome=?, pais_origem=?, "
+				+ " id_pesquisador=?, estagio=?, data_inicio_pesquisa=? " + " WHERE id=?";
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
@@ -88,7 +90,8 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			pstmt.setString(2, novaVacina.getPaisOrigem());
 			pstmt.setInt(3, novaVacina.getPesquisadorResponsavel().getId());
 			pstmt.setString(4, novaVacina.getEstagio().toString());
-			pstmt.setInt(5, novaVacina.getId());
+			pstmt.setDate(5, Date.valueOf(novaVacina.getDataInicioPesquisa()));
+			pstmt.setInt(6, novaVacina.getId());
 
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
