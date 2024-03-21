@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import model.entity.Aplicacao;
@@ -29,7 +28,7 @@ public class AplicacaoRepository implements BaseRepository<Aplicacao> {
 				novaAplicacao.setId(resultado.getInt(1));
 			}
 		} catch (SQLException erro) {
-			System.out.println("Erro ao salvar nova vacina.");
+			System.out.println("Erro ao salvar nova aplicação.");
 			System.out.println("Erro: " + erro.getMessage());
 			return null;
 		} finally {
@@ -97,7 +96,7 @@ public class AplicacaoRepository implements BaseRepository<Aplicacao> {
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet resultado = null;
-		Aplicacao aplicacao = null;
+		Aplicacao aplicacao = new Aplicacao();
 
 		String query = "SELECT * FROM aplicacao WHERE id = ?";
 
@@ -150,7 +149,6 @@ public class AplicacaoRepository implements BaseRepository<Aplicacao> {
 				aplicacao.setIdPessoa(resultado.getInt("id_pessoa"));
 
 				VacinaRepository vacinaRepository = new VacinaRepository();
-
 				int idVacina = resultado.getInt("id_vacina");
 				Vacina vacina = vacinaRepository.consultarPorId(idVacina);
 				aplicacao.setVacina(vacina);
@@ -170,36 +168,45 @@ public class AplicacaoRepository implements BaseRepository<Aplicacao> {
 		}
 		return aplicacoes;
 	}
-	
-	public boolean aplicarVacina(int idPessoa, int idVacina, LocalDate data, Avaliacao avaliacao) {
-	    Connection conn = Banco.getConnection();
-	    PreparedStatement pstmt = null;
 
-	    String query = "INSERT INTO aplicacao (id_pessoa, id_vacina, data, avaliacao) VALUES (?, ?, ?, ?)";
+	public ArrayList<Aplicacao> consultarPorIdPessoa(int idPessoa) {
+		ArrayList<Aplicacao> aplicacoes = new ArrayList<>();
+		Connection conn = Banco.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet resultado = null;
 
-	    try {
-	        pstmt = conn.prepareStatement(query);
-	        pstmt.setInt(1, idPessoa);
-	        pstmt.setInt(2, idVacina);
-	        pstmt.setDate(3, Date.valueOf(data));
-	        pstmt.setString(4, avaliacao.toString());
+		String query = "SELECT * FROM aplicacao WHERE id_pessoa = ?";
 
-	        int rowsAffected = pstmt.executeUpdate();
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, idPessoa);
+			resultado = pstmt.executeQuery();
 
-	        if (rowsAffected > 0) {
-	            return true;
-	        } else {
-	            System.out.println("Nenhuma linha afetada ao aplicar vacina.");
-	            return false;
-	        }
-	    } catch (SQLException erro) {
-	        System.out.println("Erro ao aplicar vacina.");
-	        System.out.println("Erro: " + erro.getMessage());
-	        return false;
-	    } finally {
-	        Banco.closePreparedStatement(pstmt);
-	        Banco.closeConnection(conn);
-	    }
+			while (resultado.next()) {
+				Aplicacao aplicacao = new Aplicacao();
+				aplicacao.setId(resultado.getInt("id"));
+				aplicacao.setIdPessoa(resultado.getInt("id_pessoa"));
+
+				VacinaRepository vacinaRepository = new VacinaRepository();
+
+				int idVacina = resultado.getInt("id_vacina");
+				Vacina vacina = vacinaRepository.consultarPorId(idVacina);
+				aplicacao.setVacina(vacina);
+
+				aplicacao.setData(resultado.getDate("data").toLocalDate());
+				aplicacao.setAvaliacao(Avaliacao.valueOf(resultado.getString("avaliacao")));
+
+				aplicacoes.add(aplicacao);
+			}
+		} catch (SQLException erro) {
+			System.out.println("Erro ao consultar aplicações por id de pessoa (" + idPessoa + ").");
+			System.out.println("Erro: " + erro.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closePreparedStatement(pstmt);
+			Banco.closeConnection(conn);
+		}
+		return aplicacoes;
 	}
 
 }

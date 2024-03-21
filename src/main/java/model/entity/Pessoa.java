@@ -12,20 +12,22 @@ public class Pessoa {
 	private LocalDate dataNascimento;
 	private String sexo;
 	private String cpf;
+	private Pais nacionalidade;
 	private TipoPessoa tipoPessoa;
 	private List<Aplicacao> vacinacoes;
 
 	public Pessoa() {
 	}
 
-	public Pessoa(int id, String nome, LocalDate dataNascimento, String sexo, String cpf, TipoPessoa tipoPessoa,
-			List<Aplicacao> vacinacoes) {
+	public Pessoa(int id, String nome, LocalDate dataNascimento, String sexo, String cpf, Pais nacionalidade,
+			TipoPessoa tipoPessoa, List<Aplicacao> vacinacoes) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.dataNascimento = dataNascimento;
 		this.sexo = sexo;
 		this.cpf = cpf;
+		this.nacionalidade = nacionalidade;
 		this.tipoPessoa = tipoPessoa;
 		this.vacinacoes = vacinacoes;
 	}
@@ -68,6 +70,14 @@ public class Pessoa {
 
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+
+	public Pais getNacionalidade() {
+		return nacionalidade;
+	}
+
+	public void setNacionalidade(Pais nacionalidade) {
+		this.nacionalidade = nacionalidade;
 	}
 
 	public TipoPessoa getTipoPessoa() {

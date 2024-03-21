@@ -1,7 +1,7 @@
 package service;
 
-import java.time.LocalDate;
 import java.util.List;
+
 import model.entity.Aplicacao;
 import model.entity.enums.Avaliacao;
 import model.repository.AplicacaoRepository;
@@ -11,6 +11,9 @@ public class AplicacaoService {
 	private AplicacaoRepository repository = new AplicacaoRepository();
 
 	public Aplicacao salvar(Aplicacao novaAplicacao) {
+		if (novaAplicacao.getAvaliacao() == null) {
+			novaAplicacao.setAvaliacao(Avaliacao.OTIMA);
+		}
 		return repository.salvar(novaAplicacao);
 	}
 
@@ -30,7 +33,8 @@ public class AplicacaoService {
 		return repository.consultarTodos();
 	}
 
-	public boolean aplicarVacina(int idPessoa, int idVacina, LocalDate data, Avaliacao avaliacao) {
-		return repository.aplicarVacina(idPessoa, idVacina, data, avaliacao);
+	public List<Aplicacao> consultarPorIdPessoa(int id) {
+		return repository.consultarPorIdPessoa(id);
 	}
+
 }

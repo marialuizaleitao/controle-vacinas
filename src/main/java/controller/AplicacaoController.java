@@ -11,27 +11,27 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import model.entity.Pessoa;
-import service.PessoaService;
+import model.entity.Aplicacao;
+import service.AplicacaoService;
 
-@Path("/pessoa")
-public class PessoaController {
+@Path("/aplicacao")
+public class AplicacaoController {
 
-	private PessoaService service = new PessoaService();
+	private AplicacaoService service = new AplicacaoService();
 
 	@POST
 	@Path("/salvar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Pessoa salvar(Pessoa novaPessoa) {
-		return service.salvar(novaPessoa);
+	public Aplicacao salvar(Aplicacao novaAplicacao) {
+		return service.salvar(novaAplicacao);
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public boolean atualizar(Pessoa pessoaEditada) {
-		return service.atualizar(pessoaEditada);
+	public boolean atualizar(Aplicacao aplicacaoEditada) {
+		return service.atualizar(aplicacaoEditada);
 	}
 
 	@DELETE
@@ -42,7 +42,7 @@ public class PessoaController {
 
 	@GET
 	@Path("/todas")
-	public List<Pessoa> consultarTodas() {
+	public List<Aplicacao> consultarTodas() {
 		return service.consultarTodas();
 	}
 }
