@@ -21,7 +21,9 @@ Define as regras de negócio:
 - **Salvar nova pessoa:**
   - Todos os campos são obrigatórios; caso algum não tenha sido preenchido, o serviço deve retornar uma `ControleVacinasException` com uma mensagem amigável.
   - CPF deve ser único no banco.
-- Listar todas e excluir não possuem regras específicas.
+ 
+- **Salvar nova vacina:**
+  - Validar se a pessoa informada é um pesquisador.
 
 ### Camada Model
 

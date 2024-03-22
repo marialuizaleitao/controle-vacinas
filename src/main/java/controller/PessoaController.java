@@ -2,6 +2,7 @@ package controller;
 
 import java.util.List;
 
+import exception.ControleVacinasException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -23,14 +24,14 @@ public class PessoaController {
 	@Path("/salvar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Pessoa salvar(Pessoa novaPessoa) {
+	public Pessoa salvar(Pessoa novaPessoa) throws ControleVacinasException {
 		return service.salvar(novaPessoa);
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public boolean atualizar(Pessoa pessoaEditada) {
+	public boolean atualizar(Pessoa pessoaEditada) throws ControleVacinasException {
 		return service.atualizar(pessoaEditada);
 	}
 
