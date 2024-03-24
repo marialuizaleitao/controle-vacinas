@@ -4,6 +4,7 @@ import java.util.List;
 
 import exception.ControleVacinasException;
 import model.entity.Pessoa;
+import model.entity.enums.TipoPessoa;
 import model.repository.PessoaRepository;
 
 public class PessoaService {
@@ -36,8 +37,8 @@ public class PessoaService {
 		if (p.getSexo() == " ") {
 			mensagemValidacao += " - informe o sexo";
 		}
-		if (p.getTipoPessoa().toString() != "PESQUISADOR" || p.getTipoPessoa().toString() != "VOLUNTARIO"
-				|| p.getTipoPessoa().toString() != "PUBLICO_GERAL") {
+		if (p.getTipoPessoa() != TipoPessoa.PESQUISADOR && p.getTipoPessoa() != TipoPessoa.VOLUNTARIO
+				&& p.getTipoPessoa() != TipoPessoa.PUBLICO_GERAL) {
 			mensagemValidacao += " - informe o tipo (entre 1 - PESQUISADOR, 2 - VOLUNTARIO e 3 - PUBLICO_GERAL)";
 		}
 
