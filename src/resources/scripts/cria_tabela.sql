@@ -28,7 +28,7 @@ CREATE TABLE vacinas.VACINA (
     id_pesquisador INTEGER NOT NULL,
     id_pais INTEGER NOT NULL,
     estagio ENUM('INICIAL', 'TESTES', 'APLICACAO_EM_MASSA') NOT NULL,
-    `data` DATE NOT NULL,
+    data_inicio_pesquisa DATE NOT NULL,
     CONSTRAINT vacina_pk PRIMARY KEY (id),
     CONSTRAINT pesquisador_pk FOREIGN KEY (id_pesquisador)
         REFERENCES PESSOA (id),
@@ -36,7 +36,7 @@ CREATE TABLE vacinas.VACINA (
         REFERENCES PAIS (id)
 );
 
-CREATE TABLE vacinas.APLICACAO_VACINA (
+CREATE TABLE vacinas.APLICACAO (
     id INTEGER AUTO_INCREMENT NOT NULL,
     id_pessoa INTEGER NOT NULL,
     id_vacina INTEGER NOT NULL,
