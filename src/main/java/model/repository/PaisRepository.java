@@ -12,16 +12,16 @@ import model.entity.Pais;
 public class PaisRepository implements BaseRepository<Pais> {
 
 	@Override
-	public Pais salvar(Pais novaPais) {
+	public Pais salvar(Pais novoPais) {
 		String query = "INSERT INTO pais (nome, sigla) VALUES (?, ?)";
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conn, query);
 		try {
-			preencherParametrosParaInsertOuUpdate(pstmt, novaPais);
+			preencherParametrosParaInsertOuUpdate(pstmt, novoPais);
 			pstmt.execute();
 			ResultSet resultado = pstmt.getGeneratedKeys();
 			if (resultado.next()) {
-				novaPais.setIdPais(resultado.getInt(1));
+				novoPais.setIdPais(resultado.getInt(1));
 			}
 		} catch (SQLException erro) {
 			System.out.println("Erro ao salvar novo pais.");
@@ -31,12 +31,12 @@ public class PaisRepository implements BaseRepository<Pais> {
 			Banco.closeStatement(pstmt);
 			Banco.closeConnection(conn);
 		}
-		return novaPais;
+		return novoPais;
 	}
 
-	private void preencherParametrosParaInsertOuUpdate(PreparedStatement pstmt, Pais novaPais) throws SQLException {
-		pstmt.setString(1, novaPais.getNome());
-		pstmt.setString(2, novaPais.getSigla());
+	private void preencherParametrosParaInsertOuUpdate(PreparedStatement pstmt, Pais novoPais) throws SQLException {
+		pstmt.setString(1, novoPais.getNome());
+		pstmt.setString(2, novoPais.getSigla());
 	}
 
 	@Override
@@ -66,9 +66,7 @@ public class PaisRepository implements BaseRepository<Pais> {
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
-			pstmt.setString(1, pais.getNome());
-			pstmt.setString(2, pais.getSigla());
-
+			preencherParametrosParaInsertOuUpdate(pstmt, pais);
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar pais.");

@@ -16,7 +16,7 @@ public class PessoaRepository implements BaseRepository<Pessoa> {
 
 	@Override
 	public Pessoa salvar(Pessoa novaPessoa) {
-		String query = "INSERT INTO pessoa (nome, data_nascimento, sexo, cpf, id_pais, tipo_pessoa) VALUES (?, ?, ?, ?, ?)";
+		String query = "INSERT INTO pessoa (nome, data_nascimento, sexo, cpf, id_pais, tipo_pessoa) VALUES (?, ?, ?, ?, ?, ?)";
 
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conn, query);
@@ -102,16 +102,12 @@ public class PessoaRepository implements BaseRepository<Pessoa> {
 		}
 
 		boolean alterou = false;
-		String query = " UPDATE pessoa " + " SET nome=?, data_nascimento=?, " + " sexo=?, cpf=? " + " WHERE id=?";
+		String query = " UPDATE pessoa " + " SET nome=?, data_nascimento=?, " + " sexo=?, cpf=?, "
+				+ "id_pais=?, tipo_pessoa=?" + " WHERE id=?";
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
-			pstmt.setString(1, pessoa.getNome());
-			pstmt.setDate(2, Date.valueOf(pessoa.getDataNascimento()));
-			pstmt.setString(3, pessoa.getSexo());
-			pstmt.setString(4, pessoa.getCpf());
-			pstmt.setInt(5, pessoa.getId());
-
+			preencherParametrosParaInsertOuUpdate(pstmt, pessoa);
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar pessoa.");

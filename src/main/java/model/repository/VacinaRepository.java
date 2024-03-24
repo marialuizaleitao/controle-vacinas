@@ -87,13 +87,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
-			pstmt.setString(1, novaVacina.getNome());
-			pstmt.setInt(2, novaVacina.getPesquisadorResponsavel().getId());
-			pstmt.setInt(3, novaVacina.getPais().getIdPais());
-			pstmt.setString(4, novaVacina.getEstagio().toString());
-			pstmt.setDate(5, Date.valueOf(novaVacina.getDataInicioPesquisa()));
-			pstmt.setInt(6, novaVacina.getId());
-
+			preencherParametrosParaInsertOuUpdate(pstmt, novaVacina);
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar vacina.");

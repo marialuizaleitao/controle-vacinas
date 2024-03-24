@@ -73,13 +73,7 @@ public class AplicacaoRepository implements BaseRepository<Aplicacao> {
 		Connection conn = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, aplicacaoEditada.getIdPessoa());
-			pstmt.setInt(2, aplicacaoEditada.getVacina().getId());
-			pstmt.setDate(3, Date.valueOf(aplicacaoEditada.getData()));
-			pstmt.setString(4, aplicacaoEditada.getAvaliacao().toString());
-			pstmt.setInt(5, aplicacaoEditada.getId());
-
+			preencherParametrosParaInsertOuUpdate(pstmt, aplicacaoEditada);
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar aplicação.");
