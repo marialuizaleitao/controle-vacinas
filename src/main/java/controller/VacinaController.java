@@ -28,6 +28,7 @@ public class VacinaController {
 	}
 
 	@PUT
+	@Path("/atualizar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public boolean atualizar(Vacina vacinaEditada) {
@@ -38,6 +39,12 @@ public class VacinaController {
 	@Path("/{id}")
 	public boolean excluir(@PathParam("id") int id) {
 		return service.excluir(id);
+	}
+	
+	@GET
+	@Path("/listar/{id}")
+	public Vacina consultarPorId(@PathParam("id") int id) {
+		return service.consultarPorId(id);
 	}
 
 	@GET

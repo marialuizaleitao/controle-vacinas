@@ -29,6 +29,7 @@ public class PessoaController {
 	}
 
 	@PUT
+	@Path("/atualizar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public boolean atualizar(Pessoa pessoaEditada) throws ControleVacinasException {
@@ -39,6 +40,12 @@ public class PessoaController {
 	@Path("/{id}")
 	public boolean excluir(@PathParam("id") int id) {
 		return service.excluir(id);
+	}
+	
+	@GET
+	@Path("/listar/{id}")
+	public Pessoa consultarPorId(@PathParam("id") int id) {
+		return service.consultarPorId(id);
 	}
 
 	@GET

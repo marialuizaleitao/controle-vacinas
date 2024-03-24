@@ -28,6 +28,7 @@ public class AplicacaoController {
 	}
 
 	@PUT
+	@Path("/atualizar")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public boolean atualizar(Aplicacao aplicacaoEditada) {
@@ -39,10 +40,22 @@ public class AplicacaoController {
 	public boolean excluir(@PathParam("id") int id) {
 		return service.excluir(id);
 	}
+	
+	@GET
+	@Path("/listar/{id}")
+	public Aplicacao consultarPorId(@PathParam("id") int id) {
+		return service.consultarPorId(id);
+	}
 
 	@GET
 	@Path("/todas")
 	public List<Aplicacao> consultarTodas() {
 		return service.consultarTodas();
+	}
+	
+	@GET
+	@Path("/pessoa/{id}")
+	public List<Aplicacao> consultarPorIdPessoa(@PathParam("id") int id) {
+		return service.consultarPorIdPessoa(id);
 	}
 }

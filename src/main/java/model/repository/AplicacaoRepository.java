@@ -51,7 +51,7 @@ public class AplicacaoRepository implements BaseRepository<Aplicacao> {
 		Connection conn = Banco.getConnection();
 		Statement stmt = Banco.getStatement(conn);
 		boolean excluiu = false;
-		String query = "DELETE FROM aplicacao WHERE id = ?";
+		String query = "DELETE FROM aplicacao WHERE id = " + id;
 		try {
 			if (stmt.executeUpdate(query) == 1) {
 				excluiu = true;
@@ -74,6 +74,7 @@ public class AplicacaoRepository implements BaseRepository<Aplicacao> {
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
 			preencherParametrosParaInsertOuUpdate(pstmt, aplicacaoEditada);
+			pstmt.setInt(5, aplicacaoEditada.getId());
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar aplicação.");

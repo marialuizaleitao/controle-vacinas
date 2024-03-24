@@ -88,6 +88,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
 			preencherParametrosParaInsertOuUpdate(pstmt, novaVacina);
+			pstmt.setInt(6, novaVacina.getId());
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar vacina.");

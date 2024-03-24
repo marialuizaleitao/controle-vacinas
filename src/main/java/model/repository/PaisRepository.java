@@ -67,6 +67,7 @@ public class PaisRepository implements BaseRepository<Pais> {
 		PreparedStatement pstmt = Banco.getPreparedStatement(conn, query);
 		try {
 			preencherParametrosParaInsertOuUpdate(pstmt, pais);
+			pstmt.setInt(3, pais.getIdPais());
 			alterou = pstmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar pais.");
